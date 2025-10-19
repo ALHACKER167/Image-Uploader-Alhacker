@@ -138,6 +138,14 @@
             position: relative;
         }
 
+        .header-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            position: relative;
+        }
+
         .content {
             padding: 30px;
             min-height: 400px;
@@ -151,7 +159,7 @@
             margin-bottom: 30px;
             background-color: rgba(76, 201, 240, 0.05);
             transition: all 0.3s ease;
-            cursor: pointer;
+            cursor: default; /* Changed from pointer to default */
             position: relative;
         }
 
@@ -232,16 +240,42 @@
             background: linear-gradient(to right, var(--danger), #e11d48);
         }
 
+        .btn-warning {
+            background: linear-gradient(to right, var(--warning), #d97706);
+        }
+
         .uploaded-images {
             margin-top: 30px;
         }
 
-        .uploaded-images h2 {
-            color: var(--dark);
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
-            font-size: 1.6rem;
             padding-bottom: 10px;
             border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+        }
+
+        .section-title {
+            color: var(--dark);
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .image-count {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
         }
 
         .image-list {
@@ -351,6 +385,10 @@
             background-color: var(--danger);
         }
 
+        .notification.warning {
+            background-color: var(--warning);
+        }
+
         .progress-bar {
             height: 5px;
             background-color: rgba(255, 255, 255, 0.3);
@@ -396,6 +434,21 @@
             .content {
                 padding: 20px;
             }
+            
+            .header-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .section-title {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
@@ -410,6 +463,15 @@
         <div class="header">
             <h1><i class="fas fa-cloud-upload-alt"></i> ALHACKER - Image Uploader</h1>
             <p>Upload gambar dan dapatkan link secara instan</p>
+            <div class="header-actions">
+                <button class="btn btn-success" id="browseBtn">
+                    <i class="fas fa-folder-open"></i> Pilih File
+                </button>
+                <button class="btn btn-warning" id="resetAllBtn">
+                    <i class="fas fa-trash-alt"></i> Reset Semua
+                </button>
+            </div>
+            <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
         </div>
         
         <div class="content">
@@ -420,14 +482,18 @@
                 <div class="paste-info">
                     <i class="fas fa-paste"></i> Anda juga bisa paste (Ctrl+V) gambar dari clipboard
                 </div>
-                <button class="btn" id="browseBtn">
-                    <i class="fas fa-folder-open"></i> Pilih File
-                </button>
-                <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
             </div>
             
             <div class="uploaded-images" id="uploadedImages">
-                <h2>Gambar yang Diupload</h2>
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-images"></i> Gambar yang Diupload
+                    </h2>
+                    <div class="image-count" id="imageCount">
+                        <i class="fas fa-image"></i>
+                        <span id="countText">0 Foto</span>
+                    </div>
+                </div>
                 <div class="image-list" id="imageList">
                     <div class="empty-state" id="emptyState">
                         <i class="fas fa-image"></i>
@@ -451,11 +517,14 @@
             const uploadArea = document.getElementById('uploadArea');
             const fileInput = document.getElementById('fileInput');
             const browseBtn = document.getElementById('browseBtn');
+            const resetAllBtn = document.getElementById('resetAllBtn');
             const imageList = document.getElementById('imageList');
             const emptyState = document.getElementById('emptyState');
             const notification = document.getElementById('notification');
             const notificationText = document.getElementById('notificationText');
             const notificationProgress = document.getElementById('notificationProgress');
+            const imageCount = document.getElementById('imageCount');
+            const countText = document.getElementById('countText');
             
             // Store uploaded images data
             let uploadedImages = [];
@@ -472,6 +541,20 @@
             
             // Event listeners
             browseBtn.addEventListener('click', () => fileInput.click());
+            
+            resetAllBtn.addEventListener('click', () => {
+                if (uploadedImages.length === 0) {
+                    showNotification('Tidak ada gambar untuk direset', 'warning');
+                    return;
+                }
+                
+                if (confirm(`Apakah Anda yakin ingin menghapus semua ${uploadedImages.length} gambar?`)) {
+                    resetAllImages();
+                }
+            });
+            
+            // PERBAIKAN: Hapus event listener klik pada upload area
+            // uploadArea.addEventListener('click', () => fileInput.click());
             
             uploadArea.addEventListener('dragover', (e) => {
                 e.preventDefault();
@@ -521,6 +604,23 @@
             // Save images to localStorage
             function saveImagesToStorage() {
                 localStorage.setItem('uploadedImages', JSON.stringify(uploadedImages));
+            }
+            
+            // Update image count
+            function updateImageCount() {
+                const count = uploadedImages.length;
+                countText.textContent = `${count} Foto`;
+                
+                // Update tooltip or title if needed
+                imageCount.title = `Total: ${count} gambar`;
+            }
+            
+            // Reset all images
+            function resetAllImages() {
+                uploadedImages = [];
+                saveImagesToStorage();
+                updateImageList();
+                showNotification(`Semua gambar berhasil dihapus`, 'success');
             }
             
             // Create stars for night sky
@@ -703,51 +803,53 @@
                 if (uploadedImages.length === 0) {
                     emptyState.style.display = 'block';
                     imageList.appendChild(emptyState);
-                    return;
+                } else {
+                    emptyState.style.display = 'none';
+                    
+                    uploadedImages.forEach(image => {
+                        const imageItem = document.createElement('div');
+                        imageItem.className = 'image-item';
+                        imageItem.innerHTML = `
+                            <img src="${image.preview}" alt="${image.name}" class="image-preview">
+                            <div class="image-link">
+                                <input type="text" value="${image.link}" readonly>
+                                <button class="copy-btn" data-link="${image.link}">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <div class="actions">
+                                <button class="btn btn-secondary" onclick="window.open('${image.link}', '_blank')">
+                                    <i class="fas fa-eye"></i> Lihat
+                                </button>
+                                <button class="btn btn-danger" data-id="${image.id}">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </div>
+                        `;
+                        
+                        imageList.appendChild(imageItem);
+                    });
+                    
+                    // Add event listeners to copy buttons
+                    document.querySelectorAll('.copy-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const link = this.getAttribute('data-link');
+                            copyToClipboard(link);
+                            showNotification('Link berhasil disalin!', 'success');
+                        });
+                    });
+                    
+                    // Add event listeners to delete buttons
+                    document.querySelectorAll('.btn-danger').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const id = this.getAttribute('data-id');
+                            deleteImage(id);
+                        });
+                    });
                 }
                 
-                emptyState.style.display = 'none';
-                
-                uploadedImages.forEach(image => {
-                    const imageItem = document.createElement('div');
-                    imageItem.className = 'image-item';
-                    imageItem.innerHTML = `
-                        <img src="${image.preview}" alt="${image.name}" class="image-preview">
-                        <div class="image-link">
-                            <input type="text" value="${image.link}" readonly>
-                            <button class="copy-btn" data-link="${image.link}">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                        </div>
-                        <div class="actions">
-                            <button class="btn btn-secondary" onclick="window.open('${image.link}', '_blank')">
-                                <i class="fas fa-eye"></i> Lihat
-                            </button>
-                            <button class="btn btn-danger" data-id="${image.id}">
-                                <i class="fas fa-trash"></i> Hapus
-                            </button>
-                        </div>
-                    `;
-                    
-                    imageList.appendChild(imageItem);
-                });
-                
-                // Add event listeners to copy buttons
-                document.querySelectorAll('.copy-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const link = this.getAttribute('data-link');
-                        copyToClipboard(link);
-                        showNotification('Link berhasil disalin!', 'success');
-                    });
-                });
-                
-                // Add event listeners to delete buttons
-                document.querySelectorAll('.btn-danger').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const id = this.getAttribute('data-id');
-                        deleteImage(id);
-                    });
-                });
+                // Update the image count
+                updateImageCount();
             }
             
             // Delete an image - FIXED VERSION
@@ -784,12 +886,19 @@
             function showNotification(message, type = 'success') {
                 notificationText.textContent = message;
                 
-                // Set color based on type
+                // Set icon and color based on type
+                let iconClass = 'fas fa-check-circle';
                 if (type === 'error') {
+                    iconClass = 'fas fa-exclamation-circle';
                     notification.className = 'notification error show';
+                } else if (type === 'warning') {
+                    iconClass = 'fas fa-exclamation-triangle';
+                    notification.className = 'notification warning show';
                 } else {
                     notification.className = 'notification show';
                 }
+                
+                notification.querySelector('i').className = iconClass;
                 
                 // Animate progress bar
                 notificationProgress.style.width = '100%';
