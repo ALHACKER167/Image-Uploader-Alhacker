@@ -159,7 +159,7 @@
             margin-bottom: 30px;
             background-color: rgba(76, 201, 240, 0.05);
             transition: all 0.3s ease;
-            cursor: default; /* Changed from pointer to default */
+            cursor: default;
             position: relative;
         }
 
@@ -265,6 +265,12 @@
             gap: 10px;
         }
 
+        .section-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .image-count {
             background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white;
@@ -276,6 +282,39 @@
             align-items: center;
             gap: 5px;
             box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+        }
+
+        .copy-all-btn {
+            background: linear-gradient(to right, var(--accent), #4895ef);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(76, 201, 240, 0.3);
+        }
+
+        .copy-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 201, 240, 0.4);
+        }
+
+        .copy-all-btn:active {
+            transform: translateY(0);
+        }
+
+        .copy-all-btn:disabled {
+            background: linear-gradient(to right, #cccccc, #aaaaaa);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .image-list {
@@ -449,6 +488,11 @@
             .section-title {
                 font-size: 1.4rem;
             }
+            
+            .section-header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
@@ -489,9 +533,14 @@
                     <h2 class="section-title">
                         <i class="fas fa-images"></i> Gambar yang Diupload
                     </h2>
-                    <div class="image-count" id="imageCount">
-                        <i class="fas fa-image"></i>
-                        <span id="countText">0 Foto</span>
+                    <div class="section-header-actions">
+                        <div class="image-count" id="imageCount">
+                            <i class="fas fa-image"></i>
+                            <span id="countText">0 Foto</span>
+                        </div>
+                        <button class="copy-all-btn" id="copyAllBtn" disabled>
+                            <i class="fas fa-copy"></i> Salin Semua Link
+                        </button>
                     </div>
                 </div>
                 <div class="image-list" id="imageList">
@@ -525,6 +574,7 @@
             const notificationProgress = document.getElementById('notificationProgress');
             const imageCount = document.getElementById('imageCount');
             const countText = document.getElementById('countText');
+            const copyAllBtn = document.getElementById('copyAllBtn');
             
             // Store uploaded images data
             let uploadedImages = [];
@@ -553,8 +603,8 @@
                 }
             });
             
-            // PERBAIKAN: Hapus event listener klik pada upload area
-            // uploadArea.addEventListener('click', () => fileInput.click());
+            // Event listener untuk tombol salin semua link
+            copyAllBtn.addEventListener('click', copyAllLinks);
             
             uploadArea.addEventListener('dragover', (e) => {
                 e.preventDefault();
@@ -613,6 +663,13 @@
                 
                 // Update tooltip or title if needed
                 imageCount.title = `Total: ${count} gambar`;
+                
+                // Enable/disable tombol salin semua berdasarkan jumlah gambar
+                if (count > 0) {
+                    copyAllBtn.disabled = false;
+                } else {
+                    copyAllBtn.disabled = true;
+                }
             }
             
             // Reset all images
@@ -725,7 +782,7 @@
                         // Remove temp image
                         removeTempImage(tempId);
                         
-                        // Add to uploaded images
+                        // Add to uploaded images (PERUBAHAN: gunakan unshift bukan push)
                         const newImage = {
                             id: data.data.id,
                             name: file.name,
@@ -734,7 +791,8 @@
                             deleteUrl: data.data.delete_url
                         };
                         
-                        uploadedImages.push(newImage);
+                        // PERUBAHAN: Tambahkan gambar baru di awal array, bukan di akhir
+                        uploadedImages.unshift(newImage);
                         
                         // Save to localStorage
                         saveImagesToStorage();
@@ -784,7 +842,8 @@
                     emptyState.style.display = 'none';
                 }
                 
-                imageList.appendChild(tempItem);
+                // PERUBAHAN: Tambahkan gambar sementara di awal daftar
+                imageList.insertBefore(tempItem, imageList.firstChild);
             }
             
             // Remove temporary image
@@ -806,6 +865,8 @@
                 } else {
                     emptyState.style.display = 'none';
                     
+                    // PERUBAHAN: Loop melalui array seperti biasa (tidak perlu dibalik)
+                    // Karena gambar sudah ditambahkan di awal array dengan unshift()
                     uploadedImages.forEach(image => {
                         const imageItem = document.createElement('div');
                         imageItem.className = 'image-item';
@@ -880,6 +941,23 @@
                 textarea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
+            }
+            
+            // Copy all links to clipboard
+            function copyAllLinks() {
+                if (uploadedImages.length === 0) {
+                    showNotification('Tidak ada link untuk disalin', 'warning');
+                    return;
+                }
+                
+                // Collect all links
+                const allLinks = uploadedImages.map(image => image.link).join('\n');
+                
+                // Copy to clipboard
+                copyToClipboard(allLinks);
+                
+                // Show success notification
+                showNotification(`Semua ${uploadedImages.length} link berhasil disalin!`, 'success');
             }
             
             // Show notification
