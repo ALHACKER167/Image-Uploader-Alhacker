@@ -123,7 +123,7 @@
             75% { transform: translate(-30px, -40px) rotate(3deg); }
         }
 
-        /* Realistic Astronaut */
+        /* Realistic Astronauts */
         .astronaut-container {
             position: fixed;
             top: 0;
@@ -298,22 +298,22 @@
             50% { transform: rotate(-8deg); }
         }
 
-        .tether {
+        /* Astronaut Jetpack */
+        .jetpack-flame {
             position: absolute;
-            width: 2px;
-            height: 500px;
-            background: linear-gradient(to bottom, rgba(0, 212, 255, 0.8), transparent);
-            top: 110px;
-            left: 90px;
-            transform-origin: top center;
-            animation: tether-swing 30s infinite ease-in-out;
+            width: 20px;
+            height: 40px;
+            background: linear-gradient(to top, rgba(255, 107, 107, 0.8), rgba(255, 142, 83, 0.6), transparent);
+            border-radius: 0 0 10px 10px;
+            top: 80px;
+            left: -5px;
+            filter: blur(3px);
+            animation: jetpack-pulse 1.5s infinite alternate;
         }
 
-        @keyframes tether-swing {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(5deg); }
-            50% { transform: rotate(-3deg); }
-            75% { transform: rotate(2deg); }
+        @keyframes jetpack-pulse {
+            0% { opacity: 0.7; transform: scaleY(1); }
+            100% { opacity: 1; transform: scaleY(1.2); }
         }
 
         @keyframes astronaut-float {
@@ -334,6 +334,340 @@
             }
             100% {
                 transform: translate(-200px, -100px) rotate(360deg);
+            }
+        }
+
+        /* Aliens */
+        .alien-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .alien {
+            position: absolute;
+            width: 120px;
+            height: 150px;
+            animation: alien-float 35s infinite linear;
+            filter: drop-shadow(0 0 10px rgba(111, 255, 105, 0.5));
+        }
+
+        .alien-body {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            background: linear-gradient(145deg, #7CFC00, #32CD32);
+            border-radius: 50% 50% 40% 40%;
+            top: 30px;
+            left: 20px;
+            box-shadow: 
+                inset 3px 3px 8px rgba(255, 255, 255, 0.5),
+                inset -3px -3px 8px rgba(0, 0, 0, 0.2),
+                0 0 15px rgba(124, 252, 0, 0.4);
+        }
+
+        .alien-head {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(145deg, #7CFC00, #32CD32);
+            border-radius: 60% 60% 50% 50%;
+            top: 0;
+            left: 25px;
+            box-shadow: 
+                inset 3px 3px 8px rgba(255, 255, 255, 0.5),
+                inset -3px -3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .alien-eyes {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            top: 25px;
+            left: 5px;
+        }
+
+        .alien-eye {
+            position: absolute;
+            width: 20px;
+            height: 30px;
+            background: linear-gradient(145deg, #000000, #333333);
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .alien-eye-left {
+            left: 0;
+        }
+
+        .alien-eye-right {
+            right: 0;
+        }
+
+        .alien-pupil {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #00D4FF;
+            border-radius: 50%;
+            top: 10px;
+            left: 5px;
+            animation: pupil-move 3s infinite alternate;
+        }
+
+        @keyframes pupil-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(0, 5px); }
+        }
+
+        .alien-antenna {
+            position: absolute;
+            width: 6px;
+            height: 25px;
+            background: linear-gradient(to top, #7CFC00, #32CD32);
+            top: -20px;
+            border-radius: 3px;
+        }
+
+        .antenna-left {
+            left: 20px;
+            transform: rotate(-10deg);
+        }
+
+        .antenna-right {
+            right: 20px;
+            transform: rotate(10deg);
+        }
+
+        .antenna-ball {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #FF6B6B;
+            border-radius: 50%;
+            top: -15px;
+            left: -3px;
+            animation: antenna-glow 2s infinite alternate;
+        }
+
+        @keyframes antenna-glow {
+            0% { box-shadow: 0 0 5px rgba(255, 107, 107, 0.5); }
+            100% { box-shadow: 0 0 15px rgba(255, 107, 107, 0.8); }
+        }
+
+        .alien-arms {
+            position: absolute;
+            width: 100px;
+            height: 20px;
+            top: 60px;
+            left: 10px;
+        }
+
+        .alien-arm {
+            position: absolute;
+            width: 15px;
+            height: 50px;
+            background: linear-gradient(145deg, #7CFC00, #32CD32);
+            border-radius: 8px;
+        }
+
+        .alien-arm-left {
+            left: 0;
+            transform: rotate(20deg);
+            transform-origin: top center;
+            animation: alien-arm-swing 4s infinite ease-in-out;
+        }
+
+        .alien-arm-right {
+            right: 0;
+            transform: rotate(-20deg);
+            transform-origin: top center;
+            animation: alien-arm-swing 4s infinite ease-in-out reverse;
+        }
+
+        @keyframes alien-arm-swing {
+            0%, 100% { transform: rotate(20deg); }
+            50% { transform: rotate(-10deg); }
+        }
+
+        .alien-legs {
+            position: absolute;
+            width: 80px;
+            height: 40px;
+            top: 120px;
+            left: 20px;
+        }
+
+        .alien-leg {
+            position: absolute;
+            width: 15px;
+            height: 40px;
+            background: linear-gradient(145deg, #7CFC00, #32CD32);
+            border-radius: 8px;
+        }
+
+        .alien-leg-left {
+            left: 15px;
+            transform: rotate(10deg);
+            transform-origin: top center;
+            animation: alien-leg-kick 3s infinite ease-in-out;
+        }
+
+        .alien-leg-right {
+            right: 15px;
+            transform: rotate(-10deg);
+            transform-origin: top center;
+            animation: alien-leg-kick 3s infinite ease-in-out reverse;
+        }
+
+        @keyframes alien-leg-kick {
+            0%, 100% { transform: rotate(10deg); }
+            50% { transform: rotate(-5deg); }
+        }
+
+        @keyframes alien-float {
+            0% {
+                transform: translate(100vw, 50vh) rotate(0deg);
+            }
+            25% {
+                transform: translate(70vw, 20vh) rotate(90deg);
+            }
+            50% {
+                transform: translate(40vw, 70vh) rotate(180deg);
+            }
+            75% {
+                transform: translate(10vw, 40vh) rotate(270deg);
+            }
+            100% {
+                transform: translate(100vw, 50vh) rotate(360deg);
+            }
+        }
+
+        /* Rockets */
+        .rocket-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .rocket {
+            position: absolute;
+            width: 80px;
+            height: 180px;
+            animation: rocket-fly 30s infinite linear;
+        }
+
+        .rocket-body {
+            position: absolute;
+            width: 40px;
+            height: 120px;
+            background: linear-gradient(145deg, #e6e6e6, #ffffff);
+            border-radius: 40% 40% 20% 20%;
+            top: 0;
+            left: 20px;
+            box-shadow: 
+                inset 5px 5px 10px rgba(255, 255, 255, 0.8),
+                inset -5px -5px 10px rgba(0, 0, 0, 0.1),
+                0 0 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .rocket-nose {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(145deg, #FF6B6B, #FF8E53);
+            border-radius: 50% 50% 0 0;
+            top: -20px;
+            left: 20px;
+            box-shadow: 
+                0 0 15px rgba(255, 107, 107, 0.6);
+        }
+
+        .rocket-fins {
+            position: absolute;
+            width: 80px;
+            height: 40px;
+            top: 100px;
+            left: 0;
+        }
+
+        .rocket-fin {
+            position: absolute;
+            width: 20px;
+            height: 40px;
+            background: linear-gradient(145deg, #FF6B6B, #FF8E53);
+            border-radius: 0 0 10px 10px;
+        }
+
+        .fin-left {
+            left: 0;
+            transform: skew(10deg);
+        }
+
+        .fin-right {
+            right: 0;
+            transform: skew(-10deg);
+        }
+
+        .rocket-window {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.7), rgba(108, 99, 255, 0.5));
+            border-radius: 50%;
+            top: 30px;
+            left: 30px;
+            box-shadow: 
+                inset 0 0 10px rgba(0, 212, 255, 0.5),
+                0 0 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .rocket-exhaust {
+            position: absolute;
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(to top, rgba(255, 107, 107, 0.8), rgba(255, 142, 83, 0.6), transparent);
+            border-radius: 0 0 15px 15px;
+            top: 120px;
+            left: 25px;
+            filter: blur(5px);
+            animation: exhaust-pulse 1.5s infinite alternate;
+        }
+
+        @keyframes exhaust-pulse {
+            0% { opacity: 0.7; transform: scaleY(1); }
+            100% { opacity: 1; transform: scaleY(1.2); }
+        }
+
+        @keyframes rocket-fly {
+            0% {
+                transform: translate(0, 100vh) rotate(0deg);
+            }
+            10% {
+                transform: translate(10vw, 80vh) rotate(5deg);
+            }
+            30% {
+                transform: translate(30vw, 50vh) rotate(10deg);
+            }
+            50% {
+                transform: translate(50vw, 30vh) rotate(15deg);
+            }
+            70% {
+                transform: translate(70vw, 10vh) rotate(10deg);
+            }
+            90% {
+                transform: translate(90vw, -10vh) rotate(5deg);
+            }
+            100% {
+                transform: translate(100vw, -20vh) rotate(0deg);
             }
         }
 
@@ -916,7 +1250,7 @@
                 justify-content: space-between;
             }
             
-            .astronaut {
+            .astronaut, .alien {
                 transform: scale(0.7);
             }
         }
@@ -938,30 +1272,14 @@
         <div class="shooting-stars" id="shooting-stars"></div>
     </div>
     
-    <!-- Realistic Astronaut -->
-    <div class="astronaut-container">
-        <div class="astronaut">
-            <div class="astronaut-body"></div>
-            <div class="astronaut-helmet">
-                <div class="astronaut-visor"></div>
-                <div class="astronaut-reflection"></div>
-            </div>
-            <div class="astronaut-backpack">
-                <div class="backpack-detail"></div>
-                <div class="backpack-detail"></div>
-                <div class="backpack-detail"></div>
-            </div>
-            <div class="astronaut-arms">
-                <div class="astronaut-arm arm-left"></div>
-                <div class="astronaut-arm arm-right"></div>
-            </div>
-            <div class="astronaut-legs">
-                <div class="astronaut-leg leg-left"></div>
-                <div class="astronaut-leg leg-right"></div>
-            </div>
-            <div class="tether"></div>
-        </div>
-    </div>
+    <!-- Realistic Astronauts -->
+    <div class="astronaut-container" id="astronautContainer"></div>
+    
+    <!-- Aliens -->
+    <div class="alien-container" id="alienContainer"></div>
+    
+    <!-- Rockets -->
+    <div class="rocket-container" id="rocketContainer"></div>
     
     <div class="container">
         <div class="header">
@@ -1035,6 +1353,9 @@
             const imageCount = document.getElementById('imageCount');
             const countText = document.getElementById('countText');
             const copyAllBtn = document.getElementById('copyAllBtn');
+            const astronautContainer = document.getElementById('astronautContainer');
+            const alienContainer = document.getElementById('alienContainer');
+            const rocketContainer = document.getElementById('rocketContainer');
             
             // Store uploaded images data
             let uploadedImages = [];
@@ -1045,6 +1366,15 @@
             
             // Create shooting stars
             createShootingStars();
+            
+            // Create astronauts
+            createAstronauts();
+            
+            // Create aliens
+            createAliens();
+            
+            // Create rockets
+            createRockets();
             
             // Load images from localStorage when page loads
             loadImagesFromStorage();
@@ -1101,6 +1431,136 @@
                     }
                 }
             });
+            
+            // Create multiple astronauts
+            function createAstronauts() {
+                const astronautCount = 3;
+                
+                for (let i = 0; i < astronautCount; i++) {
+                    const astronaut = document.createElement('div');
+                    astronaut.className = 'astronaut';
+                    
+                    // Random delay for animation
+                    const delay = Math.random() * 20;
+                    
+                    // Customize each astronaut slightly
+                    const scale = 0.8 + Math.random() * 0.4;
+                    const speed = 35 + Math.random() * 20;
+                    
+                    astronaut.style.animationDelay = `${delay}s`;
+                    astronaut.style.animationDuration = `${speed}s`;
+                    astronaut.style.transform = `scale(${scale})`;
+                    
+                    astronaut.innerHTML = `
+                        <div class="astronaut-body"></div>
+                        <div class="astronaut-helmet">
+                            <div class="astronaut-visor"></div>
+                            <div class="astronaut-reflection"></div>
+                        </div>
+                        <div class="astronaut-backpack">
+                            <div class="backpack-detail"></div>
+                            <div class="backpack-detail"></div>
+                            <div class="backpack-detail"></div>
+                            <div class="jetpack-flame"></div>
+                        </div>
+                        <div class="astronaut-arms">
+                            <div class="astronaut-arm arm-left"></div>
+                            <div class="astronaut-arm arm-right"></div>
+                        </div>
+                        <div class="astronaut-legs">
+                            <div class="astronaut-leg leg-left"></div>
+                            <div class="astronaut-leg leg-right"></div>
+                        </div>
+                    `;
+                    
+                    astronautContainer.appendChild(astronaut);
+                }
+            }
+            
+            // Create multiple aliens
+            function createAliens() {
+                const alienCount = 2;
+                
+                for (let i = 0; i < alienCount; i++) {
+                    const alien = document.createElement('div');
+                    alien.className = 'alien';
+                    
+                    // Random delay for animation
+                    const delay = Math.random() * 15;
+                    
+                    // Customize each alien slightly
+                    const scale = 0.7 + Math.random() * 0.3;
+                    const speed = 25 + Math.random() * 15;
+                    
+                    alien.style.animationDelay = `${delay}s`;
+                    alien.style.animationDuration = `${speed}s`;
+                    alien.style.transform = `scale(${scale})`;
+                    
+                    alien.innerHTML = `
+                        <div class="alien-head">
+                            <div class="alien-eyes">
+                                <div class="alien-eye alien-eye-left">
+                                    <div class="alien-pupil"></div>
+                                </div>
+                                <div class="alien-eye alien-eye-right">
+                                    <div class="alien-pupil"></div>
+                                </div>
+                            </div>
+                            <div class="alien-antenna antenna-left">
+                                <div class="antenna-ball"></div>
+                            </div>
+                            <div class="alien-antenna antenna-right">
+                                <div class="antenna-ball"></div>
+                            </div>
+                        </div>
+                        <div class="alien-body"></div>
+                        <div class="alien-arms">
+                            <div class="alien-arm alien-arm-left"></div>
+                            <div class="alien-arm alien-arm-right"></div>
+                        </div>
+                        <div class="alien-legs">
+                            <div class="alien-leg alien-leg-left"></div>
+                            <div class="alien-leg alien-leg-right"></div>
+                        </div>
+                    `;
+                    
+                    alienContainer.appendChild(alien);
+                }
+            }
+            
+            // Create multiple rockets
+            function createRockets() {
+                const rocketCount = 4;
+                
+                for (let i = 0; i < rocketCount; i++) {
+                    const rocket = document.createElement('div');
+                    rocket.className = 'rocket';
+                    
+                    // Random delay for animation
+                    const delay = Math.random() * 25;
+                    
+                    // Customize each rocket slightly
+                    const scale = 0.6 + Math.random() * 0.5;
+                    const speed = 25 + Math.random() * 15;
+                    
+                    rocket.style.animationDelay = `${delay}s`;
+                    rocket.style.animationDuration = `${speed}s`;
+                    rocket.style.transform = `scale(${scale})`;
+                    
+                    rocket.innerHTML = `
+                        <div class="rocket-body"></div>
+                        <div class="rocket-nose"></div>
+                        <div class="rocket-fins">
+                            <div class="rocket-fin fin-left"></div>
+                            <div class="rocket-fin fin-right"></div>
+                        </div>
+                        <div class="rocket-window"></div>
+                        <div class="rocket-exhaust"></div>
+                    `;
+                    
+                    rocketContainer.appendChild(rocket);
+                }
+            }
             
             // Load images from localStorage
             function loadImagesFromStorage() {
